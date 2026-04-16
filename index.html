@@ -458,67 +458,156 @@
     </div>
   </footer>
   <script>
-    const reviewForm = document.getElementById('review-form');
-    const reviewList = document.getElementById('review-list');
-    const storageKey = 'ricky_detailing_reviews';
+  <script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-    function getReviews() {
-      return JSON.parse(localStorage.getItem(storageKey) || '[]');
+  const SUPABASE_URL = 'https://supabase.com/dashboard/project/myrdjxphzrxwywhegsco/settings/api-keys';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_CrKygnU9LPH57EB8skg9qQ_0veE7Gfc';
+
+  const reviewForm = document.getElementById('review-form');
+  const reviewList = document.getElementById('review-list');
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function starsFromRating(rating) {
+    const count = Math.max(1, Math.min(5, Number(rating) || 5));
+    return '★'.repeat(count) + '☆'.repeat(5 - count);
+  }
+
+  function showMessage(text, isError = false) {
+    let msg = document.getElementById('review-message');
+    if (!msg) {
+      msg = document.createElement('p');
+      msg.id = 'review-message';
+      msg.className = 'mini-note';
+      msg.style.marginTop = '12px';
+      reviewForm.insertAdjacentElement('afterend', msg);
     }
+    msg.textContent = text;
+    msg.style.display = 'block';
+    msg.style.borderColor = isError ? 'rgba(255,120,120,0.45)' : 'var(--line)';
+  }
 
-    function saveReviews(reviews) {
-      localStorage.setItem(storageKey, JSON.stringify(reviews));
-    }
+  function renderReviewCard(review) {
+    return `
+      <div class="feature review-card">
+        <h4>${escapeHtml(review.name)} ${starsFromRating(review.rating)}</h4>
+        <p>${escapeHtml(review.text)}</p>
+      </div>
+    `;
+  }
 
-    function addReviewCard(review) {
-      const card = document.createElement('div');
-      card.className = 'feature review-card';
-      card.innerHTML = `
-        <h4>${review.name} ${review.rating}</h4>
-        <p>${review.text}</p>
-      `;
-      reviewList.prepend(card);
-    }
+  const needsSetup =
+    SUPABASE_URL.includes('PASTE_YOUR') ||
+    SUPABASE_PUBLISHABLE_KEY.includes('PASTE_YOUR');
 
-    function renderAllReviews() {
+  const supabase = needsSetup
+    ? null
+    : createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+  async function loadApprovedReviews() {
+    if (needsSetup) {
       reviewList.innerHTML = `
         <div class="feature review-card">
-          <h4>Jordan ★★★★★</h4>
-          <p>My car looked way better after the detail. Super easy and worth it.</p>
-        </div>
-        <div class="feature review-card">
-          <h4>Maria ★★★★★</h4>
-          <p>Very good work and showed up on time. Interior came out super clean.</p>
-        </div>
-        <div class="feature review-card">
-          <h4>Chris ★★★★☆</h4>
-          <p>Truck looked great after the wash and interior clean. Would book again.</p>
+          <h4>Setup Needed ★★★★★</h4>
+          <p>Add your Supabase URL and publishable key to turn on real customer reviews.</p>
         </div>
       `;
-
-      const saved = getReviews();
-      saved.forEach(addReviewCard);
+      return;
     }
 
-    reviewForm.addEventListener('submit', function (e) {
-      e.preventDefault();
+    const { data, error } = await supabase
+      .from('reviews')
+      .select('name, rating, text, created_at')
+      .eq('approved', true)
+      .order('created_at', { ascending: false })
+      .limit(12);
 
-      const name = document.getElementById('review-name').value.trim();
-      const rating = document.getElementById('review-rating').value;
-      const text = document.getElementById('review-text').value.trim();
+    if (error) {
+      reviewList.innerHTML = `
+        <div class="feature review-card">
+          <h4>Reviews unavailable</h4>
+          <p>Please try again later.</p>
+        </div>
+      `;
+      return;
+    }
 
-      if (!name || !rating || !text) return;
+    if (!data || data.length === 0) {
+      reviewList.innerHTML = `
+        <div class="feature review-card">
+          <h4>No reviews yet</h4>
+          <p>Be the first customer to leave a review.</p>
+        </div>
+      `;
+      return;
+    }
 
-      const review = { name, rating, text };
-      const saved = getReviews();
-      saved.unshift(review);
-      saveReviews(saved);
+    reviewList.innerHTML = data.map(renderReviewCard).join('');
+  }
 
-      renderAllReviews();
-      reviewForm.reset();
-    });
+  reviewForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
 
-    renderAllReviews();
+    if (needsSetup) {
+      showMessage('Add your Supabase URL and publishable key first.', true);
+      return;
+    }
+
+    const submitButton = reviewForm.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    submitButton.textContent = 'Submitting...';
+
+    const name = document.getElementById('review-name').value.trim();
+    const ratingValue = document.getElementById('review-rating').value;
+    const text = document.getElementById('review-text').value.trim();
+
+    const ratingMap = {
+      '★★★★★': 5,
+      '★★★★☆': 4,
+      '★★★☆☆': 3,
+      '★★☆☆☆': 2,
+      '★☆☆☆☆': 1
+    };
+
+    if (!name || !ratingValue || !text) {
+      showMessage('Please fill out your name, rating, and review.', true);
+      submitButton.disabled = false;
+      submitButton.textContent = 'Submit Review';
+      return;
+    }
+
+    const { error } = await supabase
+      .from('reviews')
+      .insert({
+        name,
+        rating: ratingMap[ratingValue],
+        text,
+        approved: false
+      });
+
+    if (error) {
+      showMessage('Review could not be submitted right now. Please try again.', true);
+      submitButton.disabled = false;
+      submitButton.textContent = 'Submit Review';
+      return;
+    }
+
+    reviewForm.reset();
+    showMessage('Thanks. Your review was submitted and is waiting for approval.');
+    submitButton.disabled = false;
+    submitButton.textContent = 'Submit Review';
+  });
+
+  loadApprovedReviews();
+
   </script>
 </body>
 </html>
