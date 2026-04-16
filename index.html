@@ -25,7 +25,10 @@
 
     body {
       font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(180deg, #081018 0%, #0b0f14 100%);
+      background: linear-gradient(rgba(8,16,24,0.85), rgba(11,15,20,0.9)), url('logo.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       color: var(--text);
       line-height: 1.6;
     }
@@ -396,7 +399,8 @@
             Ready to get your vehicle cleaned up? Reach out for available appointments, custom pricing,
             and travel rate details.
           </p>
-        
+          
+            <p id="owner-status" style="margin-top:10px; color: var(--muted); font-size:0.95rem;">Delete buttons stay hidden until unlocked.</p>
           </div>
           <div class="buttons" style="justify-content:center;">
             <a class="btn btn-primary" href="tel:5309459583">Call Now</a>
@@ -445,7 +449,7 @@
             <textarea id="review-text" rows="5" placeholder="Write your review here" required style="padding:14px 16px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,0.04); color:var(--text); font-size:1rem; resize:vertical;"></textarea>
             <button type="submit" class="btn btn-primary" style="border:none; cursor:pointer; width:fit-content;">Submit Review</button>
           </form>
-          <p class="mini-note" style="margin-top:14px;">Reviews added here will appear on the page in this browser.</p>
+          <p class="mini-note" style="margin-top:14px;">Reviews added here will appear on the page in this browser. Reviews added here will appear on the page in this browser.</p>
           
         </div>
       </div>
