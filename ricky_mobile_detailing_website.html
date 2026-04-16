@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ricky's Quick & Easy Mobile Detailing</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: #121923;
+      --card-2: #182231;
+      --text: #f5f7fb;
+      --muted: #b7c2d0;
+      --accent: #3aa0ff;
+      --accent-2: #67e8f9;
+      --line: rgba(255,255,255,0.1);
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #081018 0%, #0b0f14 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1100px, 92%);
+      margin: 0 auto;
+    }
+
+    header {
+      background: linear-gradient(135deg, rgba(58,160,255,0.2), rgba(103,232,249,0.08));
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(10px);
+      z-index: 20;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      gap: 16px;
+    }
+
+    .brand {
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+    }
+
+    .brand span {
+      color: var(--accent-2);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .hero {
+      padding: 84px 0 60px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(58,160,255,0.14);
+      color: #bfe0ff;
+      border: 1px solid rgba(58,160,255,0.3);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      line-height: 1.05;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 620px;
+      margin-bottom: 24px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-weight: 700;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #03111e;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-secondary {
+      border: 1px solid var(--line);
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .hero-card {
+      background: linear-gradient(180deg, var(--card), var(--card-2));
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card h3 {
+      margin-bottom: 10px;
+      font-size: 1.25rem;
+    }
+
+    .hero-card p {
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    section {
+      padding: 24px 0 56px;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .section-subtitle {
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, var(--card), #0f1620);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+    }
+
+    .price-list {
+      list-style: none;
+      display: grid;
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .price-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .price-list strong {
+      color: var(--text);
+    }
+
+    .mini-note {
+      color: #d9e7f7;
+      font-size: 0.92rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-top: 8px;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .feature {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .feature h4 {
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+    }
+
+    .feature p {
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    .contact {
+      padding-bottom: 70px;
+    }
+
+    .contact-box {
+      background: linear-gradient(135deg, rgba(58,160,255,0.16), rgba(103,232,249,0.08));
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .contact-box p {
+      color: var(--muted);
+      margin: 12px auto 20px;
+      max-width: 700px;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      padding: 22px 0 30px;
+      font-size: 0.92rem;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .pricing-grid,
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">Ricky's <span>Quick & Easy</span> Mobile Detailing</div>
+      <nav class="nav-links">
+        <a href="#pricing">Pricing</a>
+        <a href="#about">Services</a>
+        <a href="#contact">Book Now</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="badge">Mobile detailing • Clean shine • Simple pricing</div>
+          <h1>Make your ride look clean, glossy, and fresh.</h1>
+          <p>
+            Professional mobile detailing with simple starting prices for different vehicle sizes.
+            Call or text for appointments, exact rates, and travel pricing.
+          </p>
+          <div class="buttons">
+            <a class="btn btn-primary" href="#contact">Call or Text to Book</a>
+            <a class="btn btn-secondary" href="#pricing">See Pricing</a>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <h3>Quick Pricing Note</h3>
+          <p>Prices listed below are starting prices.</p>
+          <p>Final price may change depending on vehicle condition, size, and travel distance.</p>
+          <p class="mini-note">Traveling rates may apply. Contact for exact quote and appointment availability.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing">
+      <div class="container">
+        <h2 class="section-title">Pricing</h2>
+        <p class="section-subtitle">Starting prices by vehicle type. Call or text for an exact quote.</p>
+
+        <div class="pricing-grid">
+          <div class="card">
+            <h3>2 Door Sports / Coupe</h3>
+            <ul class="price-list">
+              <li><span>Outside Wash</span> <strong>$39.99</strong></li>
+              <li><span>Interior</span> <strong>Starts at $69.99</strong></li>
+              <li><span>Wax Add-On</span> <strong>+$24.99</strong></li>
+            </ul>
+            <div class="mini-note">Great for sporty cars, coupes, and smaller 2-door vehicles.</div>
+          </div>
+
+          <div class="card">
+            <h3>4 Door Sedan</h3>
+            <ul class="price-list">
+              <li><span>Outside Wash</span> <strong>$49.99</strong></li>
+              <li><span>Interior</span> <strong>Starts at $79.99</strong></li>
+              <li><span>Wax Add-On</span> <strong>+$24.99</strong></li>
+            </ul>
+            <div class="mini-note">Perfect for daily drivers, family sedans, and standard 4-door cars.</div>
+          </div>
+
+          <div class="card">
+            <h3>Truck & SUV</h3>
+            <ul class="price-list">
+              <li><span>Outside Wash</span> <strong>$49.99</strong></li>
+              <li><span>Interior</span> <strong>Starts at $99.99</strong></li>
+              <li><span>Wax Add-On</span> <strong>+$29.99</strong></li>
+            </ul>
+            <div class="mini-note">For trucks, SUVs, and larger vehicles that need extra time and care.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="container">
+        <h2 class="section-title">Why choose Ricky's?</h2>
+        <p class="section-subtitle">Straightforward pricing, mobile convenience, and a clean finish you can see.</p>
+
+        <div class="about-grid">
+          <div class="feature">
+            <h4>Mobile Convenience</h4>
+            <p>I come to you, making it easy to get your vehicle cleaned without wasting time.</p>
+          </div>
+          <div class="feature">
+            <h4>Simple Packages</h4>
+            <p>Easy starting prices based on vehicle size, with wax available as an add-on.</p>
+          </div>
+          <div class="feature">
+            <h4>Custom Quotes</h4>
+            <p>Prices are not fully set and may change depending on the vehicle's condition and travel distance.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact">
+      <div class="container">
+        <div class="contact-box">
+          <h2 class="section-title">Call or Text for Appointment and Rates</h2>
+          <p>
+            Ready to get your vehicle cleaned up? Reach out for available appointments, custom pricing,
+            and travel rate details.
+          </p>
+          <div class="buttons" style="justify-content:center;">
+            <a class="btn btn-primary" href="tel:5309459583">Call Now</a>
+            <a class="btn btn-secondary" href="sms:5309459583">Text Now</a>
+          </div>
+          <p style="margin-top: 18px; color: #e6eef8; font-weight: 700;">(530) 945-9583</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      Ricky's Quick & Easy Mobile Detailing • Starting prices only • Rates may change • Travel rates may apply
+    </div>
+  </footer>
+</body>
+</html>
