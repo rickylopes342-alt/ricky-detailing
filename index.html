@@ -404,6 +404,45 @@
         </div>
       </div>
     </section>
+      <section id="reviews">
+      <div class="container">
+        <h2 class="section-title">Customer Reviews</h2>
+        <p class="section-subtitle">See what people are saying and leave a review after your detail.</p>
+
+        <div class="about-grid" id="review-list">
+          <div class="feature review-card">
+            <h4>Jordan ★★★★★</h4>
+            <p>My car looked way better after the detail. Super easy and worth it.</p>
+          </div>
+          <div class="feature review-card">
+            <h4>Maria ★★★★★</h4>
+            <p>Very good work and showed up on time. Interior came out super clean.</p>
+          </div>
+          <div class="feature review-card">
+            <h4>Chris ★★★★☆</h4>
+            <p>Truck looked great after the wash and interior clean. Would book again.</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 24px;">
+          <h3 style="margin-bottom: 14px;">Leave a Review</h3>
+          <form id="review-form" style="display:grid; gap:14px;">
+            <input type="text" id="review-name" placeholder="Your name" required style="padding:14px 16px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,0.04); color:var(--text); font-size:1rem;" />
+            <select id="review-rating" required style="padding:14px 16px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,0.04); color:var(--text); font-size:1rem;">
+              <option value="">Choose a rating</option>
+              <option value="★★★★★">5 Stars</option>
+              <option value="★★★★☆">4 Stars</option>
+              <option value="★★★☆☆">3 Stars</option>
+              <option value="★★☆☆☆">2 Stars</option>
+              <option value="★☆☆☆☆">1 Star</option>
+            </select>
+            <textarea id="review-text" rows="5" placeholder="Write your review here" required style="padding:14px 16px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,0.04); color:var(--text); font-size:1rem; resize:vertical;"></textarea>
+            <button type="submit" class="btn btn-primary" style="border:none; cursor:pointer; width:fit-content;">Submit Review</button>
+          </form>
+          <p class="mini-note" style="margin-top:14px;">Reviews added here will appear on the page in this browser.</p>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -411,5 +450,42 @@
       Ricky's Quick & Easy Mobile Detailing • Starting prices only • Rates may change • Travel rates may apply
     </div>
   </footer>
+  <script>
+    const reviewForm = document.getElementById('review-form');
+    const reviewList = document.getElementById('review-list');
+    const storageKey = 'ricky_detailing_reviews';
+
+    function loadSavedReviews() {
+      const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      saved.forEach(addReviewCard);
+    }
+
+    function addReviewCard(review) {
+      const card = document.createElement('div');
+      card.className = 'feature review-card';
+      card.innerHTML = `<h4>${review.name} ${review.rating}</h4><p>${review.text}</p>`;
+      reviewList.prepend(card);
+    }
+
+    reviewForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById('review-name').value.trim();
+      const rating = document.getElementById('review-rating').value;
+      const text = document.getElementById('review-text').value.trim();
+
+      if (!name || !rating || !text) return;
+
+      const review = { name, rating, text };
+      const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      saved.unshift(review);
+      localStorage.setItem(storageKey, JSON.stringify(saved));
+
+      addReviewCard(review);
+      reviewForm.reset();
+    });
+
+    loadSavedReviews();
+  </script>
 </body>
 </html>
