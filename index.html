@@ -457,66 +457,66 @@
       Ricky's Quick & Easy Mobile Detailing • Starting prices only • Rates may change • Travel rates may apply
     </div>
   </footer>
-  <script>
- <script type="module">
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const SUPABASE_URL = 'https://qarepoibkgopyndhvaen.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_mmIB8O_2YLmamSM4qhQvjQ_xSyKKx_1';
+    <script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+  const SUPABASE_URL = 'https://qarepoibkgopyndhvaen.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_mmIB8O_2YLmamSM4qhQvjQ_xSyKKx_1';
 
-const form = document.getElementById('review-form');
-const list = document.getElementById('review-list');
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-function stars(r) {
-  return '★'.repeat(r) + '☆'.repeat(5 - r);
-}
+  const form = document.getElementById('review-form');
+  const list = document.getElementById('review-list');
 
-async function loadReviews() {
-  const { data } = await supabase
-    .from('reviews')
-    .select('*')
-    .eq('approved', true)
-    .order('created_at', { ascending: false });
+  function stars(r) {
+    return '★'.repeat(r) + '☆'.repeat(5 - r);
+  }
 
-  if (!data) return;
+  async function loadReviews() {
+    const { data } = await supabase
+      .from('reviews')
+      .select('*')
+      .eq('approved', true)
+      .order('created_at', { ascending: false });
 
-  list.innerHTML = data.map(r => `
-    <div class="feature review-card">
-      <h4>${r.name} ${stars(r.rating)}</h4>
-      <p>${r.text}</p>
-    </div>
-  `).join('');
-}
+    if (!data) return;
 
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
+    list.innerHTML = data.map(r => `
+      <div class="feature review-card">
+        <h4>${r.name} ${stars(r.rating)}</h4>
+        <p>${r.text}</p>
+      </div>
+    `).join('');
+  }
 
-  const name = document.getElementById('review-name').value;
-  const ratingText = document.getElementById('review-rating').value;
-  const text = document.getElementById('review-text').value;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-  const map = {
-    '★★★★★': 5,
-    '★★★★☆': 4,
-    '★★★☆☆': 3,
-    '★★☆☆☆': 2,
-    '★☆☆☆☆': 1
-  };
+    const name = document.getElementById('review-name').value;
+    const ratingText = document.getElementById('review-rating').value;
+    const text = document.getElementById('review-text').value;
 
-  await supabase.from('reviews').insert({
-    name,
-    rating: map[ratingText],
-    text,
-    approved: false
+    const map = {
+      '★★★★★': 5,
+      '★★★★☆': 4,
+      '★★★☆☆': 3,
+      '★★☆☆☆': 2,
+      '★☆☆☆☆': 1
+    };
+
+    await supabase.from('reviews').insert({
+      name,
+      rating: map[ratingText],
+      text,
+      approved: false
+    });
+
+    form.reset();
+    alert('Review submitted! It will show after approval.');
   });
 
-  form.reset();
-  alert('Review submitted! It will show after approval.');
-});
-
-loadReviews();
+  loadReviews();
 </script>
 </body>
 </html>
