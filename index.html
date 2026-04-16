@@ -396,9 +396,6 @@
             Ready to get your vehicle cleaned up? Reach out for available appointments, custom pricing,
             and travel rate details.
           </p>
-          <div class="buttons" style="justify-content:center; margin-bottom: 18px;">
-            <button class="btn btn-secondary" id="owner-access-btn" type="button">Owner Access</button>
-          </div>
           <div id="owner-panel" style="display:none; margin: 0 auto 18px; max-width: 420px; text-align:left; background: rgba(255,255,255,0.04); border:1px solid var(--line); border-radius:18px; padding:16px;">
             <label for="owner-code" style="display:block; margin-bottom:8px; font-weight:700;">Enter owner code</label>
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -436,7 +433,11 @@
         </div>
 
         <div class="card" style="margin-top: 24px;">
-          <h3 style="margin-bottom: 14px;">Leave a Review</h3>
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px;">
+            <h3 style="margin:0;">Leave a Review</h3>
+            <button class="btn btn-secondary" id="owner-access-btn" type="button">🔒 Owner Access</button>
+          </div>
+          
           <form id="review-form" style="display:grid; gap:14px;">
             <input type="text" id="review-name" placeholder="Your name" required style="padding:14px 16px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,0.04); color:var(--text); font-size:1rem;" />
             <select id="review-rating" required style="padding:14px 16px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,0.04); color:var(--text); font-size:1rem;">
@@ -452,7 +453,7 @@
           </form>
           <p class="mini-note" style="margin-top:14px;">Reviews added here will appear on the page in this browser. Owner controls are built in below.</p>
           <div class="mini-note" style="margin-top:12px;">
-            <strong>Owner delete mode:</strong> Press the <strong>Owner Access</strong> button, enter your code, then use the delete buttons on reviews.
+            <strong>Owner delete mode:</strong> Press the <strong>🔒 Owner Access</strong> button above, enter your code, then use the delete buttons on reviews.
           </div>
         </div>
       </div>
