@@ -396,12 +396,7 @@
             Ready to get your vehicle cleaned up? Reach out for available appointments, custom pricing,
             and travel rate details.
           </p>
-          <div id="owner-panel" style="display:none; margin: 0 auto 18px; max-width: 420px; text-align:left; background: rgba(255,255,255,0.04); border:1px solid var(--line); border-radius:18px; padding:16px;">
-            <label for="owner-code" style="display:block; margin-bottom:8px; font-weight:700;">Enter owner code</label>
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-              <input type="password" id="owner-code" placeholder="Enter code" style="flex:1; min-width:200px; padding:12px 14px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,0.04); color:var(--text); font-size:1rem;" />
-              <button class="btn btn-primary" id="owner-login-btn" type="button" style="border:none; cursor:pointer;">Unlock</button>
-            </div>
+          
             <p id="owner-status" style="margin-top:10px; color: var(--muted); font-size:0.95rem;">Delete buttons stay hidden until unlocked.</p>
           </div>
           <div class="buttons" style="justify-content:center;">
@@ -435,7 +430,7 @@
         <div class="card" style="margin-top: 24px;">
           <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px;">
             <h3 style="margin:0;">Leave a Review</h3>
-            <button class="btn btn-secondary" id="owner-access-btn" type="button">🔒 Owner Access</button>
+            
           </div>
           
           <form id="review-form" style="display:grid; gap:14px;">
@@ -451,10 +446,8 @@
             <textarea id="review-text" rows="5" placeholder="Write your review here" required style="padding:14px 16px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,0.04); color:var(--text); font-size:1rem; resize:vertical;"></textarea>
             <button type="submit" class="btn btn-primary" style="border:none; cursor:pointer; width:fit-content;">Submit Review</button>
           </form>
-          <p class="mini-note" style="margin-top:14px;">Reviews added here will appear on the page in this browser. Owner controls are built in below.</p>
-          <div class="mini-note" style="margin-top:12px;">
-            <strong>Owner delete mode:</strong> Press the <strong>🔒 Owner Access</strong> button above, enter your code, then use the delete buttons on reviews.
-          </div>
+          <p class="mini-note" style="margin-top:14px;">Reviews added here will appear on the page in this browser. Reviews added here will appear on the page in this browser.</p>
+          
         </div>
       </div>
     </section>
@@ -470,44 +463,6 @@
     const reviewList = document.getElementById('review-list');
     const storageKey = 'ricky_detailing_reviews';
 
-    function loadSavedReviews() {
-      const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
-      saved.forEach(addReviewCard);
-    }
-
-    function addReviewCard(review, indexOverride = null) {
-      const card = document.createElement('div');
-      const index = indexOverride ?? getReviews().length - 1;
-      card.className = 'feature review-card';
-      card.setAttribute('data-review-index', index);
-      card.innerHTML = `
-        <h4>${review.name} ${review.rating}</h4>
-        <p>${review.text}</p>
-        <button class="btn btn-secondary delete-review-btn" type="button" style="display:none; margin-top:12px;">Delete Review</button>
-      `;
-
-      const deleteBtn = card.querySelector('.delete-review-btn');
-      deleteBtn.addEventListener('click', function () {
-        if (!ownerUnlocked) return;
-        const idx = Number(card.getAttribute('data-review-index'));
-        deleteReview(idx);
-      });
-
-      if (ownerUnlocked) {
-        deleteBtn.style.display = 'inline-block';
-      }
-
-      reviewList.prepend(card);
-    }
-
-    const OWNER_CODE = 'Ricky2026';
-    let ownerUnlocked = false;
-    const ownerAccessBtn = document.getElementById('owner-access-btn');
-    const ownerPanel = document.getElementById('owner-panel');
-    const ownerLoginBtn = document.getElementById('owner-login-btn');
-    const ownerCodeInput = document.getElementById('owner-code');
-    const ownerStatus = document.getElementById('owner-status');
-
     function getReviews() {
       return JSON.parse(localStorage.getItem(storageKey) || '[]');
     }
@@ -516,69 +471,35 @@
       localStorage.setItem(storageKey, JSON.stringify(reviews));
     }
 
+    function addReviewCard(review) {
+      const card = document.createElement('div');
+      card.className = 'feature review-card';
+      card.innerHTML = `
+        <h4>${review.name} ${review.rating}</h4>
+        <p>${review.text}</p>
+      `;
+      reviewList.prepend(card);
+    }
+
     function renderAllReviews() {
       reviewList.innerHTML = `
-          <div class="feature review-card">
-            <h4>Jordan ★★★★★</h4>
-            <p>My car looked way better after the detail. Super easy and worth it.</p>
-            <button class="btn btn-secondary delete-review-btn" type="button" style="display:${ownerUnlocked ? 'inline-block' : 'none'}; margin-top:12px;">Delete Review</button>
-          </div>
-          <div class="feature review-card">
-            <h4>Maria ★★★★★</h4>
-            <p>Very good work and showed up on time. Interior came out super clean.</p>
-            <button class="btn btn-secondary delete-review-btn" type="button" style="display:${ownerUnlocked ? 'inline-block' : 'none'}; margin-top:12px;">Delete Review</button>
-          </div>
-          <div class="feature review-card">
-            <h4>Chris ★★★★☆</h4>
-            <p>Truck looked great after the wash and interior clean. Would book again.</p>
-            <button class="btn btn-secondary delete-review-btn" type="button" style="display:${ownerUnlocked ? 'inline-block' : 'none'}; margin-top:12px;">Delete Review</button>
-          </div>
+        <div class="feature review-card">
+          <h4>Jordan ★★★★★</h4>
+          <p>My car looked way better after the detail. Super easy and worth it.</p>
+        </div>
+        <div class="feature review-card">
+          <h4>Maria ★★★★★</h4>
+          <p>Very good work and showed up on time. Interior came out super clean.</p>
+        </div>
+        <div class="feature review-card">
+          <h4>Chris ★★★★☆</h4>
+          <p>Truck looked great after the wash and interior clean. Would book again.</p>
+        </div>
       `;
 
       const saved = getReviews();
-      saved.forEach((review, index) => addReviewCard(review, index));
+      saved.forEach(addReviewCard);
     }
-
-    function deleteReview(index) {
-      const reviews = getReviews();
-      reviews.splice(index, 1);
-      saveReviews(reviews);
-      renderAllReviews();
-      attachStaticDeleteHandlers();
-    }
-
-    function toggleDeleteButtons() {
-      document.querySelectorAll('.delete-review-btn').forEach(btn => {
-        btn.style.display = ownerUnlocked ? 'inline-block' : 'none';
-      });
-    }
-
-    function attachStaticDeleteHandlers() {
-      const staticButtons = reviewList.querySelectorAll('.feature.review-card .delete-review-btn');
-      staticButtons.forEach((btn, index) => {
-        btn.onclick = function () {
-          if (!ownerUnlocked) return;
-          if (index < 3) {
-            btn.parentElement.remove();
-          }
-        };
-      });
-    }
-
-    ownerAccessBtn.addEventListener('click', function () {
-      ownerPanel.style.display = ownerPanel.style.display === 'none' ? 'block' : 'none';
-    });
-
-    ownerLoginBtn.addEventListener('click', function () {
-      if (ownerCodeInput.value === OWNER_CODE) {
-        ownerUnlocked = true;
-        ownerStatus.textContent = 'Owner mode unlocked. You can now delete reviews.';
-        toggleDeleteButtons();
-        attachStaticDeleteHandlers();
-      } else {
-        ownerStatus.textContent = 'Wrong code. Try again.';
-      }
-    });
 
     reviewForm.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -595,12 +516,10 @@
       saveReviews(saved);
 
       renderAllReviews();
-      attachStaticDeleteHandlers();
       reviewForm.reset();
     });
 
     renderAllReviews();
-    attachStaticDeleteHandlers();
   </script>
 </body>
 </html>
