@@ -458,156 +458,65 @@
     </div>
   </footer>
   <script>
-  <script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+ <script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-  const SUPABASE_URL = 'https://supabase.com/dashboard/project/myrdjxphzrxwywhegsco/settings/api-keys';
-  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_CrKygnU9LPH57EB8skg9qQ_0veE7Gfc';
+const SUPABASE_URL = 'https://qarepoibkgopyndhvaen.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_mmIB8O_2YLmamSM4qhQvjQ_xSyKKx_1';
 
-  const reviewForm = document.getElementById('review-form');
-  const reviewList = document.getElementById('review-list');
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  function escapeHtml(value) {
-    return String(value)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
-  }
+const form = document.getElementById('review-form');
+const list = document.getElementById('review-list');
 
-  function starsFromRating(rating) {
-    const count = Math.max(1, Math.min(5, Number(rating) || 5));
-    return '★'.repeat(count) + '☆'.repeat(5 - count);
-  }
+function stars(r) {
+  return '★'.repeat(r) + '☆'.repeat(5 - r);
+}
 
-  function showMessage(text, isError = false) {
-    let msg = document.getElementById('review-message');
-    if (!msg) {
-      msg = document.createElement('p');
-      msg.id = 'review-message';
-      msg.className = 'mini-note';
-      msg.style.marginTop = '12px';
-      reviewForm.insertAdjacentElement('afterend', msg);
-    }
-    msg.textContent = text;
-    msg.style.display = 'block';
-    msg.style.borderColor = isError ? 'rgba(255,120,120,0.45)' : 'var(--line)';
-  }
+async function loadReviews() {
+  const { data } = await supabase
+    .from('reviews')
+    .select('*')
+    .eq('approved', true)
+    .order('created_at', { ascending: false });
 
-  function renderReviewCard(review) {
-    return `
-      <div class="feature review-card">
-        <h4>${escapeHtml(review.name)} ${starsFromRating(review.rating)}</h4>
-        <p>${escapeHtml(review.text)}</p>
-      </div>
-    `;
-  }
+  if (!data) return;
 
-  const needsSetup =
-    SUPABASE_URL.includes('PASTE_YOUR') ||
-    SUPABASE_PUBLISHABLE_KEY.includes('PASTE_YOUR');
+  list.innerHTML = data.map(r => `
+    <div class="feature review-card">
+      <h4>${r.name} ${stars(r.rating)}</h4>
+      <p>${r.text}</p>
+    </div>
+  `).join('');
+}
 
-  const supabase = needsSetup
-    ? null
-    : createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-  async function loadApprovedReviews() {
-    if (needsSetup) {
-      reviewList.innerHTML = `
-        <div class="feature review-card">
-          <h4>Setup Needed ★★★★★</h4>
-          <p>Add your Supabase URL and publishable key to turn on real customer reviews.</p>
-        </div>
-      `;
-      return;
-    }
+  const name = document.getElementById('review-name').value;
+  const ratingText = document.getElementById('review-rating').value;
+  const text = document.getElementById('review-text').value;
 
-    const { data, error } = await supabase
-      .from('reviews')
-      .select('name, rating, text, created_at')
-      .eq('approved', true)
-      .order('created_at', { ascending: false })
-      .limit(12);
+  const map = {
+    '★★★★★': 5,
+    '★★★★☆': 4,
+    '★★★☆☆': 3,
+    '★★☆☆☆': 2,
+    '★☆☆☆☆': 1
+  };
 
-    if (error) {
-      reviewList.innerHTML = `
-        <div class="feature review-card">
-          <h4>Reviews unavailable</h4>
-          <p>Please try again later.</p>
-        </div>
-      `;
-      return;
-    }
-
-    if (!data || data.length === 0) {
-      reviewList.innerHTML = `
-        <div class="feature review-card">
-          <h4>No reviews yet</h4>
-          <p>Be the first customer to leave a review.</p>
-        </div>
-      `;
-      return;
-    }
-
-    reviewList.innerHTML = data.map(renderReviewCard).join('');
-  }
-
-  reviewForm.addEventListener('submit', async function (e) {
-    e.preventDefault();
-
-    if (needsSetup) {
-      showMessage('Add your Supabase URL and publishable key first.', true);
-      return;
-    }
-
-    const submitButton = reviewForm.querySelector('button[type="submit"]');
-    submitButton.disabled = true;
-    submitButton.textContent = 'Submitting...';
-
-    const name = document.getElementById('review-name').value.trim();
-    const ratingValue = document.getElementById('review-rating').value;
-    const text = document.getElementById('review-text').value.trim();
-
-    const ratingMap = {
-      '★★★★★': 5,
-      '★★★★☆': 4,
-      '★★★☆☆': 3,
-      '★★☆☆☆': 2,
-      '★☆☆☆☆': 1
-    };
-
-    if (!name || !ratingValue || !text) {
-      showMessage('Please fill out your name, rating, and review.', true);
-      submitButton.disabled = false;
-      submitButton.textContent = 'Submit Review';
-      return;
-    }
-
-    const { error } = await supabase
-      .from('reviews')
-      .insert({
-        name,
-        rating: ratingMap[ratingValue],
-        text,
-        approved: false
-      });
-
-    if (error) {
-      showMessage('Review could not be submitted right now. Please try again.', true);
-      submitButton.disabled = false;
-      submitButton.textContent = 'Submit Review';
-      return;
-    }
-
-    reviewForm.reset();
-    showMessage('Thanks. Your review was submitted and is waiting for approval.');
-    submitButton.disabled = false;
-    submitButton.textContent = 'Submit Review';
+  await supabase.from('reviews').insert({
+    name,
+    rating: map[ratingText],
+    text,
+    approved: false
   });
 
-  loadApprovedReviews();
+  form.reset();
+  alert('Review submitted! It will show after approval.');
+});
 
-  </script>
+loadReviews();
+</script>
 </body>
 </html>
