@@ -421,12 +421,19 @@
         <h2 class="section-title">Customer Reviews</h2>
         <p class="section-subtitle">See what people are saying and leave a review after your detail.</p>
 
-        <div class="card" style="margin-bottom:20px; text-align:center;">
-          <h3>⭐ Average Rating</h3>
-          <p id="avg-stars"></p>
-          <p id="avg-number" style="font-weight:700;">0.0 / 5</p>
-        </div>
+       <div class="card" style="margin-bottom:20px; text-align:center;">
+  <h3>⭐ Average Rating</h3>
 
+  <div id="avg-stars-wrap" style="position:relative; display:inline-block; font-size:2rem; line-height:1;">
+    <div id="avg-stars-bg" style="color:#555;">★★★★★</div>
+    <div id="avg-stars-fill"
+         style="color:#FFD700; position:absolute; left:0; top:0; white-space:nowrap; overflow:hidden; width:0%; text-shadow:0 0 10px rgba(255,215,0,0.35);">
+      ★★★★★
+    </div>
+  </div>
+
+  <p id="avg-number" style="font-weight:700; margin-top:10px;">0.0 / 5</p>
+</div>
         <div class="about-grid" id="review-list"></div>
 
         <div class="card" style="margin-top: 24px;">
