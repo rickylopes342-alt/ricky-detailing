@@ -434,14 +434,17 @@
           
           <form id="review-form" style="display:grid; gap:14px;">
             <input type="text" id="review-name" placeholder="Your name" required style="padding:14px 16px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,0.04); color:var(--text); font-size:1rem;" />
-            <select id="review-rating" required style="padding:14px 16px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,0.04); color:var(--text); font-size:1rem;">
-              <option value="">Choose a rating</option>
-              <option value="★★★★★">5 Stars</option>
-              <option value="★★★★☆">4 Stars</option>
-              <option value="★★★☆☆">3 Stars</option>
-              <option value="★★☆☆☆">2 Stars</option>
-              <option value="★☆☆☆☆">1 Star</option>
-            </select>
+           <div>
+  <p style="margin-bottom:8px; color:var(--text); font-weight:700;">Choose a rating</p>
+  <div id="star-rating" style="display:flex; gap:8px; font-size:2rem; cursor:pointer; user-select:none;">
+    <span class="star" data-value="1">☆</span>
+    <span class="star" data-value="2">☆</span>
+    <span class="star" data-value="3">☆</span>
+    <span class="star" data-value="4">☆</span>
+    <span class="star" data-value="5">☆</span>
+  </div>
+  <input type="hidden" id="review-rating" required />
+           </div>
             <textarea id="review-text" rows="5" placeholder="Write your review here" required style="padding:14px 16px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,0.04); color:var(--text); font-size:1rem; resize:vertical;"></textarea>
             <button type="submit" class="btn btn-primary" style="border:none; cursor:pointer; width:fit-content;">Submit Review</button>
           </form>
@@ -496,7 +499,24 @@
     const name = document.getElementById('review-name').value;
     const ratingText = document.getElementById('review-rating').value;
     const text = document.getElementById('review-text').value;
+const starElements = document.querySelectorAll('.star');
+let selectedRating = 0;
 
+function paintStars(rating) {
+  starElements.forEach((star) => {
+    const value = Number(star.dataset.value);
+    star.textContent = value <= rating ? '★' : '☆';
+  });
+}
+
+starElements.forEach((star) => {
+  star.addEventListener('click', () => {
+    selectedRating = Number(star.dataset.value);
+    document.getElementById('review-rating').value =
+      '★'.repeat(selectedRating) + '☆'.repeat(5 - selectedRating);
+    paintStars(selectedRating);
+  });
+});
     const map = {
       '★★★★★': 5,
       '★★★★☆': 4,
@@ -512,10 +532,10 @@
       approved: false
     });
 
-    form.reset();
-    alert('Review submitted! It will show after approval.');
-  });
-
+   form.reset();
+selectedRating = 0;
+paintStars(0);
+alert('Review submitted! It will show after approval.');
   loadReviews();
 </script>
 </body>
