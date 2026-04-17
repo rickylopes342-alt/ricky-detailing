@@ -264,6 +264,14 @@
       max-width: 700px;
     }
 
+    #avg-stars {
+      font-size: 2rem;
+      color: #FFD700;
+      letter-spacing: 4px;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.35);
+      transition: all 0.3s ease;
+    }
+
     footer {
       border-top: 1px solid var(--line);
       color: var(--muted);
@@ -309,7 +317,7 @@
           <div class="badge">Mobile detailing • Clean shine • Simple pricing</div>
           <h1>Make your vehicle look clean, glossy, and like new.</h1>
           <p>
-            Professional mobile detailing with simple starting prices based on vehicle size. 
+            Professional mobile detailing with simple starting prices based on vehicle size.
             Call or text for appointments, exact quotes, and travel pricing.
           </p>
           <div class="buttons">
@@ -396,35 +404,36 @@
             Ready to get your vehicle cleaned up? Reach out for available appointments, custom pricing,
             and travel rate details.
           </p>
-<p style="color:#ffcc00; font-weight:600; margin-top:10px;">
-Notice: A $20 deposit is required to secure your appointment and will be applied toward your final balance. Deposits are non-refundable unless at least 24 hours’ notice is given for cancellation or rescheduling. Same-day cancellations and no-shows will forfeit the deposit.
+          <p style="color:#ffcc00; font-weight:600; margin-top:10px;">
+            Notice: A $20 deposit is required to secure your appointment and will be applied toward your final balance. Deposits are non-refundable unless at least 24 hours’ notice is given for cancellation or rescheduling. Same-day cancellations and no-shows will forfeit the deposit.
+          </p>
+          <div class="buttons" style="justify-content:center; margin-top:16px;">
             <a class="btn btn-primary" href="tel:5309459583">Call Now</a>
             <a class="btn btn-secondary" href="sms:5309459583">Text Now</a>
           </div>
-
           <p style="margin-top: 20px; text-align:center; color: #e6eef8; font-weight: 700; font-size: 1.1rem;">(530) 945-9583</p>
         </div>
       </div>
     </section>
-      <section id="reviews">
+
+    <section id="reviews">
       <div class="container">
         <h2 class="section-title">Customer Reviews</h2>
         <p class="section-subtitle">See what people are saying and leave a review after your detail.</p>
-<div class="card" style="margin-bottom:20px; text-align:center;">
-  <h3>⭐ Average Rating</h3>
-  <p id="avg-stars" style="font-size:2rem; color:#FFD700;"></p>
-  <p id="avg-number" style="font-weight:700;">0.0 / 5</p>
-</div>
-        <div class="about-grid" id="review-list">
-        
+
+        <div class="card" style="margin-bottom:20px; text-align:center;">
+          <h3>⭐ Average Rating</h3>
+          <p id="avg-stars"></p>
+          <p id="avg-number" style="font-weight:700;">0.0 / 5</p>
         </div>
+
+        <div class="about-grid" id="review-list"></div>
 
         <div class="card" style="margin-top: 24px;">
           <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px;">
             <h3 style="margin:0;">Leave a Review</h3>
-            
           </div>
-          
+
           <form id="review-form" style="display:grid; gap:14px;">
             <input type="text" id="review-name" placeholder="Your name" required style="padding:14px 16px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,0.04); color:var(--text); font-size:1rem;" />
             <select id="review-rating" required style="padding:14px 16px; border-radius:14px; border:1px solid var(--line); background:rgba(255,255,255,0.04); color:var(--text); font-size:1rem;">
@@ -439,7 +448,6 @@ Notice: A $20 deposit is required to secure your appointment and will be applied
             <button type="submit" class="btn btn-primary" style="border:none; cursor:pointer; width:fit-content;">Submit Review</button>
           </form>
           <p class="mini-note" style="margin-top:14px;">Reviews are submitted for approval before they appear on the site.</p>
-          
         </div>
       </div>
     </section>
@@ -451,92 +459,97 @@ Notice: A $20 deposit is required to secure your appointment and will be applied
     </div>
   </footer>
 
-    <script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-  const SUPABASE_URL = 'https://qarepoibkgopyndhvaen.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_mmIB8O_2YLmamSM4qhQvjQ_xSyKKx_1';
+    const SUPABASE_URL = 'https://qarepoibkgopyndhvaen.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_mmIB8O_2YLmamSM4qhQvjQ_xSyKKx_1';
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const form = document.getElementById('review-form');
-  const list = document.getElementById('review-list');
+    const form = document.getElementById('review-form');
+    const list = document.getElementById('review-list');
 
-  function stars(r) {
-    return '★'.repeat(r) + '☆'.repeat(5 - r);
-  }
-async function updateAverage() {
-  const { data } = await supabase
-    .from('reviews')
-    .select('rating')
-    .eq('approved', true);
+    function stars(r) {
+      const num = Number(r) || 0;
+      return '★'.repeat(num) + '☆'.repeat(5 - num);
+    }
 
-  const starsEl = document.getElementById('avg-stars');
-  const numEl = document.getElementById('avg-number');
+    async function updateAverage() {
+      const { data } = await supabase
+        .from('reviews')
+        .select('rating')
+        .eq('approved', true);
 
-  if (!data || data.length === 0) {
-    starsEl.textContent = 'No ratings yet';
-    numEl.textContent = '';
-    return;
-  }
+      const starsEl = document.getElementById('avg-stars');
+      const numEl = document.getElementById('avg-number');
 
-  const total = data.reduce((sum, r) => sum + Number(r.rating || 0), 0);
-  const avg = total / data.length;
-const rounded = Math.round(avg);
+      if (!data || data.length === 0) {
+        starsEl.textContent = '☆☆☆☆☆';
+        numEl.textContent = 'No reviews yet';
+        return;
+      }
 
-starsEl.textContent =
-  '★'.repeat(rounded) + '☆'.repeat(5 - rounded);
+      const total = data.reduce((sum, r) => sum + Number(r.rating || 0), 0);
+      const avg = total / data.length;
+      const rounded = Math.round(avg);
 
-numEl.textContent =
-  `${avg.toFixed(1)} / 5 (${data.length} reviews)`;
- 
+      starsEl.textContent = '★'.repeat(rounded) + '☆'.repeat(5 - rounded);
+      numEl.textContent = `${avg.toFixed(1)} / 5 (${data.length} review${data.length === 1 ? '' : 's'})`;
+    }
 
-}
-  async function loadReviews() {
-    const { data } = await supabase
-      .from('reviews')
-      .select('*')
-      .eq('approved', true)
-      .order('created_at', { ascending: false });
+    async function loadReviews() {
+      const { data } = await supabase
+        .from('reviews')
+        .select('*')
+        .eq('approved', true)
+        .order('created_at', { ascending: false });
 
-    if (!data) return;
+      if (!data) return;
 
-    list.innerHTML = data.map(r => `
-      <div class="feature review-card">
-        <h4>${r.name} ${stars(r.rating)}</h4>
-        <p>${r.text}</p>
-      </div>
-    `).join('');
-  }
+      list.innerHTML = data.map(r => `
+        <div class="feature review-card">
+          <h4>${r.name} <span style="color:#FFD700;">${stars(r.rating)}</span></h4>
+          <p>${r.text}</p>
+        </div>
+      `).join('');
+    }
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-    const name = document.getElementById('review-name').value;
-    const ratingText = document.getElementById('review-rating').value;
-    const text = document.getElementById('review-text').value;
+      const name = document.getElementById('review-name').value.trim();
+      const ratingText = document.getElementById('review-rating').value;
+      const text = document.getElementById('review-text').value.trim();
 
-    const map = {
-      '★★★★★': 5,
-      '★★★★☆': 4,
-      '★★★☆☆': 3,
-      '★★☆☆☆': 2,
-      '★☆☆☆☆': 1
-    };
+      const map = {
+        '★★★★★': 5,
+        '★★★★☆': 4,
+        '★★★☆☆': 3,
+        '★★☆☆☆': 2,
+        '★☆☆☆☆': 1
+      };
 
-    await supabase.from('reviews').insert({
-      name,
-      rating: map[ratingText],
-      text,
-      approved: false
+      if (!name || !ratingText || !text) return;
+
+      await supabase.from('reviews').insert({
+        name,
+        rating: map[ratingText],
+        text,
+        approved: false
+      });
+
+      form.reset();
+      alert('Review submitted! It will show after approval.');
     });
 
-    form.reset();
-    alert('Review submitted! It will show after approval.');
-  });
+    loadReviews();
+    updateAverage();
 
-  loadReviews();
-updateAverage();
-</script>
+    setInterval(() => {
+      loadReviews();
+      updateAverage();
+    }, 5000);
+  </script>
 </body>
 </html>
