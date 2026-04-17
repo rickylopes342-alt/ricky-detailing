@@ -475,28 +475,31 @@
       return '★'.repeat(num) + '☆'.repeat(5 - num);
     }
 
-    async function updateAverage() {
-      const { data } = await supabase
-        .from('reviews')
-        .select('rating')
-        .eq('approved', true);
+   async function updateAverage() {
+  const { data } = await supabase
+    .from('reviews')
+    .select('rating')
+    .eq('approved', true);
 
-      const starsEl = document.getElementById('avg-stars');
-      const numEl = document.getElementById('avg-number');
+  const fillEl = document.getElementById('avg-stars-fill');
+  const numEl = document.getElementById('avg-number');
 
-      if (!data || data.length === 0) {
-        starsEl.textContent = '☆☆☆☆☆';
-        numEl.textContent = 'No reviews yet';
-        return;
-      }
+  if (!data || data.length === 0) {
+    fillEl.style.width = '0%';
+    numEl.textContent = 'No reviews yet';
+    return;
+  }
 
-      const total = data.reduce((sum, r) => sum + Number(r.rating || 0), 0);
-      const avg = total / data.length;
-      const rounded = Math.round(avg);
+  const total = data.reduce((sum, r) => sum + Number(r.rating || 0), 0);
+  const avg = total / data.length;
+  const percent = (avg / 5) * 100;
 
-      starsEl.textContent = '★'.repeat(rounded) + '☆'.repeat(5 - rounded);
-      numEl.textContent = `${avg.toFixed(1)} / 5 (${data.length} review${data.length === 1 ? '' : 's'})`;
-    }
+  // ⭐ fill stars smoothly (Google style)
+  fillEl.style.width = `${percent}%`;
+
+  // 🔢 number display
+  numEl.textContent = `${avg.toFixed(1)} / 5 (${data.length} review${data.length === 1 ? '' : 's'})`;
+  }
 
     async function loadReviews() {
       const { data } = await supabase
